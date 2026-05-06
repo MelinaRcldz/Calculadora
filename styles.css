@@ -93,6 +93,10 @@ body {
   background: #9ca3af; 
 }
 
+.calculator-button.decimal {
+  font-weight: bold;
+}
+
 .calculator-button.equals {
   background: #10b981;
   font-weight: bold;

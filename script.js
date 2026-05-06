@@ -15,22 +15,29 @@ if (!historyContainer) {
 }
 
 const BUTTONS = [
+  { label: "C", type: "clear" },
+  { label: "←", type: "delete" },
+  { label: "/", type: "operator" },
+  { label: "*", type: "operator" },
+
   { label: "7", type: "number" },
   { label: "8", type: "number" },
   { label: "9", type: "number" },
-  { label: "/", type: "operator" },
+  { label: "-", type: "operator" },
+
   { label: "4", type: "number" },
   { label: "5", type: "number" },
   { label: "6", type: "number" },
-  { label: "*", type: "operator" },
+  { label: "+", type: "operator" },
+
   { label: "1", type: "number" },
   { label: "2", type: "number" },
   { label: "3", type: "number" },
-  { label: "-", type: "operator" },
-  { label: "0", type: "number" },
-  { label: "C", type: "clear" },
   { label: "=", type: "equals" },
-  { label: "+", type: "operator" }
+
+  { label: "", type: "empty" },
+  { label: "0", type: "number" },
+  { label: ".", type: "decimal" },
 ]
 
 class History {
@@ -113,6 +120,27 @@ class Calculator {
     this.#render()
   }
 
+  handleDelete() {
+    if (this.#state.currentValue.length === 1) {
+      this.#state.currentValue = "0"
+    } else {
+      this.#state.currentValue =
+        this.#state.currentValue.slice(0, -1)
+    }
+
+    this.#render()
+  }
+
+  handleDecimal() {
+    if (this.#state.currentValue.includes(".")) {
+      return
+    }
+
+    this.#state.currentValue += "."
+
+    this.#render()
+  }
+
   clear() {
     this.#state.currentValue = "0"
     this.#state.previousValue = null
@@ -174,6 +202,18 @@ BUTTONS.forEach((buttonConfig) => {
     button.classList.add("equals")
   }
 
+  if (buttonConfig.type === "delete") {
+  button.classList.add("delete")
+  }
+
+  if (buttonConfig.type === "decimal") {
+  button.classList.add("decimal")
+  }
+
+  if (buttonConfig.type === "empty") {
+  button.style.visibility = "hidden"
+  }
+
   keypad.appendChild(button)
 })
 
@@ -199,6 +239,14 @@ keypad.addEventListener("click", (event) => {
 
   if (type === "clear") {
     calculator.clear()
+  }
+
+  if (type === "delete") {
+    calculator.handleDelete()
+  }
+
+  if (type === "decimal") {
+    calculator.handleDecimal()
   }
 
   if (type === "equals") {
