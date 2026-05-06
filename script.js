@@ -142,8 +142,13 @@ class Calculator {
   }
 
   #render() {
+  if (this.#state.operator !== null) {
+    this.#display.textContent =
+      `${this.#state.previousValue} ${this.#state.operator} ${this.#state.currentValue}`
+  } else {
     this.#display.textContent = this.#state.currentValue
   }
+}
 }
 
 const history = new History(historyContainer)
