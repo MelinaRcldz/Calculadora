@@ -1,5 +1,6 @@
 const display = document.querySelector(".calculator-display")
 const keypad = document.querySelector(".calculator-keypad")
+const historyContainer = document.querySelector(".history-list")
 
 if (!display) {
   throw new Error("No se encontró el display de la calculadora")
@@ -9,13 +10,11 @@ if (!keypad) {
   throw new Error("No se encontró el keypad de la calculadora")
 }
 
-const calculatorState = {
-  currentValue: "0",
-  previousValue: null,
-  operator: null
+if (!historyContainer) {
+  throw new Error("No se encontró el contenedor de historial de la calculadora")
 }
 
-const buttons = [
+const BUTTONS = [
   { label: "7", type: "number" },
   { label: "8", type: "number" },
   { label: "9", type: "number" },
@@ -34,17 +33,124 @@ const buttons = [
   { label: "+", type: "operator" }
 ]
 
-function renderDisplay () {
-  display.textContent = calculatorState.currentValue
+class History {
+  #container
+  #entries = []
+  
+  constructor (container) {
+    if (!container) {
+      throw new Error("No se proporcionó un contenedor para el historial") /*History requires a DOM container*/
+    }
+    this.#container = container
+  }
+
+  addEntry (expression, result) {
+    this.#entries.push({ expression, result })
+    this.#render()
+  }
+
+  #render () {
+    this.#container.replaceChildren() 
+
+    this.#entries.forEach((entry) => {
+      const item = document.createElement("li")
+      item.textContent = `${entry.expression} = ${entry.result}`
+      this.#container.appendChild(item)
+    })
+  }
 }
 
-function createButton () {
+class Calculator {
+  static OPERATIONS = {
+    "+": (a, b) => a + b,
+    "-": (a, b) => a - b,
+    "*": (a, b) => a * b,
+    "/": (a, b) => (b === 0 ? "Error" : a / b) /*"/": (a, b) => a / b*/
+  }
+
+  #display
+  #history
+  #state = {
+    currentValue: "0",
+    previousValue: null,
+    operator: null
+  }
+
+  constructor (display, history) {
+    if (!display) {
+      throw new Error("No se proporcionó un display para la calculadora")  /*Calculator requires a display*/
+    }
+    if (!history) {
+      throw new Error("No se proporcionó un historial para la calculadora") /*Calculator requires a history*/
+    }
+
+    this.#display = display
+    this.#history = history
+  }
+
+  handleNumber (value) {
+    if (this.#state.currentValue === "0" || this.#state.currentValue === "Error") {
+      this.#state.currentValue = value
+    } else {
+      this.#state.currentValue += value
+    }
+    this.#render()
+  }
+
+  handleOperator (operator) {
+    if (this.#state.currentValue === "Error") {
+      return
+    }
+
+    if (this.#state.operator !== null) {
+      this.calculate()
+    }
+
+    this.#state.previousValue = this.#state.currentValue
+    this.#state.operator = operator
+    this.#state.currentValue = "0"
+
+    this.#render()
+  }
+
+  clear() {
+    this.#state.currentValue = "0"
+    this.#state.previousValue = null
+    this.#state.operator = null
+    this.#render()
+  }
+
+  calculate() {
+    if (this.#state.previousValue === null || this.#state.operator === null) {
+      return
+    }
+
+    const previous = Number(this.#state.previousValue)
+    const current = Number(this.#state.currentValue)
+    const operator = this.#state.operator
+
+    const result = Calculator.OPERATIONS[operator](previous, current)
+    const expression = `${previous} ${operator} ${current}`
+
+    this.#history.addEntry(expression, result)
+
+    this.#state.currentValue = String(result)
+    this.#state.previousValue = null
+    this.#state.operator = null
+
+    this.#render()
+  }
+
+  #render() {
+    this.#display.textContent = this.#state.currentValue
+  }
+}
+
+const history = new History(historyContainer)
+const calculator = new Calculator(display, history)
+
+BUTTONS.forEach((buttonConfig) => {
   const button = document.createElement("button")
-  return button
-}
-
-buttons.forEach(function (buttonConfig) {
-  const button = createButton()
 
   button.textContent = buttonConfig.label
   button.dataset.type = buttonConfig.type
@@ -55,61 +161,18 @@ buttons.forEach(function (buttonConfig) {
     button.classList.add("operator")
   }
 
-  keypad.append(button)
+  if (buttonConfig.type === "clear") {
+    button.classList.add("clear")
+  }
+
+  if (buttonConfig.type === "equals") {
+    button.classList.add("equals")
+  }
+
+  keypad.appendChild(button)
 })
 
-function handleNumber (value) {
-  if (calculatorState.currentValue === "0") {
-    calculatorState.currentValue = value
-    return
-  }
-
-  calculatorState.currentValue += value
-}
-
-function handleOperator (operator) {
-  calculatorState.previousValue = calculatorState.currentValue
-  calculatorState.operator = operator
-  calculatorState.currentValue = "0"
-}
-
-function clearCalculator () {
-  calculatorState.currentValue = "0"
-  calculatorState.previousValue = null
-  calculatorState.operator = null
-}
-
-function calculateResult () {
-  if (calculatorState.previousValue === null || calculatorState.operator === null) {
-    return
-  }
-
-  const previous = Number(calculatorState.previousValue)
-  const current = Number(calculatorState.currentValue)
-  let result = 0
-
-  if (calculatorState.operator === "+") {
-    result = previous + current
-  }
-
-  if (calculatorState.operator === "-") {
-    result = previous - current
-  }
-
-  if (calculatorState.operator === "*") {
-    result = previous * current
-  }
-
-  if (calculatorState.operator === "/") {
-    result = previous / current
-  }
-
-  calculatorState.currentValue = String(result)
-  calculatorState.previousValue = null
-  calculatorState.operator = null
-}
-
-function buttonPress (event) {
+keypad.addEventListener("click", (event) => {
   const button = event.target.closest("button")
 
   if (!button) {
@@ -119,25 +182,21 @@ function buttonPress (event) {
   const type = button.dataset.type
   const value = button.dataset.value
 
-  console.log("Button clicked:", type, value)
+  //console.log("Button clicked:", type, value)
 
   if (type === "number") {
-    handleNumber(value)
+    calculator.handleNumber(value)
   }
 
   if (type === "operator") {
-    handleOperator(value)
+    calculator.handleOperator(value)
   }
 
   if (type === "clear") {
-    clearCalculator()
+    calculator.clear()
   }
 
   if (type === "equals") {
-    calculateResult()
+    calculator.calculate()
   }
-
-  renderDisplay()
-}
-
-keypad.addEventListener("click", buttonPress)
+})
