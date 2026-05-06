@@ -80,7 +80,8 @@ class Calculator {
   #state = {
     currentValue: "0",
     previousValue: null,
-    operator: null
+    operator: null,
+    shouldResetDisplay: false
   }
 
   constructor (display, history) {
@@ -96,8 +97,14 @@ class Calculator {
   }
 
   handleNumber (value) {
-    if (this.#state.currentValue === "0" || this.#state.currentValue === "Error") {
+    if (this.#state.currentValue === "0" || 
+        this.#state.currentValue === "Error" || 
+        this.#state.shouldResetDisplay
+    ) {
+
       this.#state.currentValue = value
+      this.#state.shouldResetDisplay = false
+
     } else {
       this.#state.currentValue += value
     }
@@ -110,12 +117,12 @@ class Calculator {
     }
 
     if (this.#state.operator !== null) {
-      this.calculate()
+      this.calculate(false)
     }
 
     this.#state.previousValue = this.#state.currentValue
     this.#state.operator = operator
-    this.#state.currentValue = "0"
+    this.#state.currentValue = ""
 
     this.#render()
   }
@@ -148,8 +155,12 @@ class Calculator {
     this.#render()
   }
 
-  calculate() {
+  calculate(saveToHistory = true) {
     if (this.#state.previousValue === null || this.#state.operator === null) {
+      return
+    }
+
+    if (this.#state.currentValue === "") {
       return
     }
 
@@ -158,23 +169,35 @@ class Calculator {
     const operator = this.#state.operator
 
     const result = Calculator.OPERATIONS[operator](previous, current)
+    const roundedResult = Number(result.toFixed(10))
+
     const expression = `${previous} ${operator} ${current}`
 
-    this.#history.addEntry(expression, result)
+    if (saveToHistory) {
+      this.#history.addEntry(expression, roundedResult)
+    }
 
-    this.#state.currentValue = String(result)
+    this.#state.currentValue = String(roundedResult)
     this.#state.previousValue = null
     this.#state.operator = null
+    this.#state.shouldResetDisplay = true
 
     this.#render()
   }
 
   #render() {
   if (this.#state.operator !== null) {
-    this.#display.textContent =
-      `${this.#state.previousValue} ${this.#state.operator} ${this.#state.currentValue}`
+
+    if (this.#state.currentValue === "") {
+      this.#display.textContent =
+        `${this.#state.previousValue} ${this.#state.operator}`
+      } else {
+        this.#display.textContent =
+          `${this.#state.previousValue} ${this.#state.operator} ${this.#state.currentValue}`
+      }
+
   } else {
-    this.#display.textContent = this.#state.currentValue
+      this.#display.textContent = this.#state.currentValue
   }
 }
 }
