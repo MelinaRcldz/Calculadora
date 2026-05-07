@@ -10,57 +10,34 @@ Mini proyecto desarrollado con HTML, CSS y JavaScript para practicar manipulaci�
 
 ## ✨ Funcionalidades
 
-- Renderizado dinámico de botones desde JavaScript.
 - Operaciones básicas: suma, resta, multiplicación y división.
 - Historial dinámico de operaciones.
+- Limpieza del historial.
 - Soporte para números decimales.
 - Eliminación del último dígito con el botón ←.
 - Validación de división por cero.
 - Corrección de precisión decimal (`0.1 + 0.2`).
 - Reset automático del display después del resultado.
-- Tema oscuro responsive.
-- Diferenciación visual de botones por acción.
+
+## 🎨 Diseño y UX/UI
+
+- Interfaz dark mode estilo glassmorphism.
+- Efectos hover y microinteracciones
+- Botones diferenciados visualmente según acción.
+- Panel lateral de historial.
+- Diseño responsive basico.
+- Animaciones suaves y efecto flotante.
 
 ## 🎯 Objetivo del proyecto
 
-Practicar conceptos fundamentales de JavaScript y manipulación del DOM:
+Practicar:
 
-- Selección de elementos HTML.
-- Manejo de eventos.
+- Manipulación del DOM.
 - Renderizado dinámico.
-- Uso de clases en JavaScript.
-- Manipulación de estado interno.
-- Separación de responsabilidades.
+- Manejo de eventos
+- Manejo de estado en JavaScript
+- Origanización de código con clases.
 - Uso de Git y commits semánticos.
-
-## 🧠 Conceptos trabajados
-
-- `document.querySelector`
-- `document.createElement`
-- `appendChild`
-- `textContent`
-- `classList`
-- `dataset`
-- `addEventListener`
-- `event.target`
-- `closest`
-- Arrays y objetos
-- Clases privadas (`#state`)
-- Métodos de clase
-- Renderizado dinámico
-- Manipulación de strings y números
-
-## 🎨 Enfoque UX/UI
-
-Además de la lógica funcional, se trabajó una mejora visual de la interfaz aplicando:
-
-- Tema oscuro moderno.
-- Jerarquía visual.
-- Colores diferenciados según acción.
-- Botón principal destacado.
-- Diseño tipo card.
-- Historial lateral.
-- Adaptación responsive básica.
 
 ## 📌 Estado del proyecto
 
