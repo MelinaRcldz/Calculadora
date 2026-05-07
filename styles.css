@@ -170,6 +170,38 @@ body {
   margin-top: 0;
 }
 
+.history-clear {
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 10px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+
+  background: rgba(239, 68, 68, 0.18);
+  color: #f9fafb;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  backdrop-filter: blur(10px);
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.history-clear:hover {
+  background: rgba(239, 68, 68, 0.32);
+  transform: translateY(-1px);
+}
+
+.history-clear:active {
+  transform: scale(0.98);
+}
+
 .history-list {
   padding-left: 20px;
 }

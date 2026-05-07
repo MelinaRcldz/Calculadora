@@ -1,6 +1,7 @@
 const display = document.querySelector(".calculator-display")
 const keypad = document.querySelector(".calculator-keypad")
 const historyContainer = document.querySelector(".history-list")
+const historyClearButton = document.querySelector(".history-clear")
 
 if (!display) {
   throw new Error("No se encontró el display de la calculadora")
@@ -12,6 +13,10 @@ if (!keypad) {
 
 if (!historyContainer) {
   throw new Error("No se encontró el contenedor de historial de la calculadora")
+}
+
+if (!historyClearButton) {
+  throw new Error("No se encontró el botón para limpiar historial")
 }
 
 const BUTTONS = [
@@ -53,6 +58,11 @@ class History {
 
   addEntry (expression, result) {
     this.#entries.push({ expression, result })
+    this.#render()
+  }
+
+  clear () {
+    this.#entries = []
     this.#render()
   }
 
@@ -275,4 +285,8 @@ keypad.addEventListener("click", (event) => {
   if (type === "equals") {
     calculator.calculate()
   }
+})
+
+historyClearButton.addEventListener("click", () => {
+  history.clear()
 })
