@@ -43,6 +43,7 @@ const BUTTONS = [
   { label: "", type: "empty" },
   { label: "0", type: "number" },
   { label: ".", type: "decimal" },
+  { label: "+/-", type: "sign" }
 ]
 
 class History {
@@ -157,6 +158,24 @@ class Calculator {
 
     this.#render()
   }
+
+  handleSign() {
+  if (this.#state.currentValue === "0") {
+    this.#state.currentValue = "-"
+    this.#render()
+    return
+  }
+
+  if (this.#state.currentValue.startsWith("-")) {
+    this.#state.currentValue =
+      this.#state.currentValue.slice(1)
+  } else {
+    this.#state.currentValue =
+      "-" + this.#state.currentValue
+  }
+
+  this.#render()
+}
 
   clear() {
     this.#state.currentValue = "0"
@@ -281,6 +300,10 @@ keypad.addEventListener("click", (event) => {
   if (type === "decimal") {
     calculator.handleDecimal()
   }
+
+  if (type === "sign") {
+  calculator.handleSign()
+}
 
   if (type === "equals") {
     calculator.calculate()
