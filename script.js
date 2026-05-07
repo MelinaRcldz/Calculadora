@@ -335,3 +335,36 @@ keypad.addEventListener("click", (event) => {
 historyClearButton.addEventListener("click", () => {
   history.clear()
 })
+
+document.addEventListener("keydown", (event) => {
+  const key = event.key
+
+  if (key >= "0" && key <= "9") {
+    calculator.handleNumber(key)
+  }
+
+  if (["+", "-", "*", "/"].includes(key)) {
+    calculator.handleOperator(key)
+  }
+
+  if (key === "Enter" || key === "=") {
+    calculator.calculate()
+  }
+
+  if (key === "Backspace") {
+    calculator.handleDelete()
+  }
+
+  if (key === "Escape") {
+    event.preventDefault()
+    calculator.clear()
+  }
+
+  if (key === ".") {
+    calculator.handleDecimal()
+  }
+
+  if (key === "%") {
+    calculator.handlePercentage()
+  }
+})
