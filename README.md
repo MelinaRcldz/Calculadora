@@ -15,6 +15,9 @@ Mini proyecto desarrollado con HTML, CSS y JavaScript para practicar manipulaci�
 - Limpieza del historial.
 - Soporte para números decimales.
 - Eliminación del último dígito con el botón ←.
+- Operación de porcentaje (%).
+- Cambio de signo (+/-)
+- Soporte para teclado físico.
 - Validación de división por cero.
 - Corrección de precisión decimal (`0.1 + 0.2`).
 - Reset automático del display después del resultado.
@@ -22,10 +25,10 @@ Mini proyecto desarrollado con HTML, CSS y JavaScript para practicar manipulaci�
 ## 🎨 Diseño y UX/UI
 
 - Interfaz dark mode estilo glassmorphism.
-- Efectos hover y microinteracciones
+- Efectos hover y microinteracciones.
 - Botones diferenciados visualmente según acción.
 - Panel lateral de historial.
-- Diseño responsive basico.
+- Diseño responsive básico.
 - Animaciones suaves y efecto flotante.
 
 ## 🎯 Objetivo del proyecto
