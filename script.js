@@ -21,29 +21,29 @@ if (!historyClearButton) {
 
 const BUTTONS = [
   { label: "C", type: "clear" },
-  { label: "←", type: "delete" },
+  { label: "%", type: "percentage" },
   { label: "/", type: "operator" },
-  { label: "*", type: "operator" },
+  { label: "←", type: "delete" },
 
   { label: "7", type: "number" },
   { label: "8", type: "number" },
   { label: "9", type: "number" },
-  { label: "-", type: "operator" },
+  { label: "*", type: "operator" },
 
   { label: "4", type: "number" },
   { label: "5", type: "number" },
   { label: "6", type: "number" },
-  { label: "+", type: "operator" },
+  { label: "-", type: "operator" },
 
   { label: "1", type: "number" },
   { label: "2", type: "number" },
   { label: "3", type: "number" },
-  { label: "=", type: "equals" },
+  { label: "+", type: "operator" },
 
-  { label: "", type: "empty" },
+  { label: "+/-", type: "sign" },
   { label: "0", type: "number" },
   { label: ".", type: "decimal" },
-  { label: "+/-", type: "sign" }
+  { label: "=", type: "equals" }
 ]
 
 class History {
@@ -167,15 +167,30 @@ class Calculator {
   }
 
   if (this.#state.currentValue.startsWith("-")) {
-    this.#state.currentValue =
+      this.#state.currentValue =
       this.#state.currentValue.slice(1)
   } else {
     this.#state.currentValue =
       "-" + this.#state.currentValue
+    }
+
+    this.#render()
   }
 
-  this.#render()
-}
+  handlePercentage() {
+    if (
+      this.#state.currentValue === "0" ||
+      this.#state.currentValue === "" ||
+      this.#state.currentValue === "Error"
+    ) {
+      return
+    }
+
+    const value = Number(this.#state.currentValue)
+    this.#state.currentValue = String(value / 100)
+    this.#render()
+  }
+ 
 
   clear() {
     this.#state.currentValue = "0"
@@ -242,7 +257,10 @@ BUTTONS.forEach((buttonConfig) => {
   button.dataset.value = buttonConfig.label
   button.classList.add("calculator-button")
 
-  if (buttonConfig.type === "operator") {
+  if (
+    buttonConfig.type === "operator" ||
+    buttonConfig.type === "percentage"
+  ) {
     button.classList.add("operator")
   }
 
@@ -303,7 +321,11 @@ keypad.addEventListener("click", (event) => {
 
   if (type === "sign") {
   calculator.handleSign()
-}
+  }
+
+  if (type === "percentage") {
+  calculator.handlePercentage()
+  }
 
   if (type === "equals") {
     calculator.calculate()
