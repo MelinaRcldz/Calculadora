@@ -213,8 +213,17 @@ class Calculator {
     const operator = this.#state.operator
 
     const result = Calculator.OPERATIONS[operator](previous, current)
-    const roundedResult = Number(result.toFixed(10))
+    if (result === "Error") {
+      this.#state.currentValue = "Error"
+      this.#state.previousValue = null
+      this.#state.operator = null
+      this.#state.shouldResetDisplay = true
 
+      this.#render()
+      return
+    }
+
+    const roundedResult = Number(result.toFixed(10))
     const expression = `${previous} ${operator} ${current}`
 
     if (saveToHistory) {
